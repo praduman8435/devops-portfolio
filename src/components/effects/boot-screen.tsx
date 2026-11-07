@@ -49,17 +49,17 @@ export function BootScreen() {
       timers.forEach(clearTimeout);
       setPhase("leaving");
       markBooted();
-      timers.push(window.setTimeout(() => setPhase("gone"), 520));
+      timers.push(window.setTimeout(() => setPhase("gone"), 420));
       window.removeEventListener("keydown", finish);
       window.removeEventListener("pointerdown", finish);
     };
 
-    let elapsed = 120;
+    let elapsed = 90;
     LINES.forEach((_, i) => {
-      elapsed += 85 + Math.random() * 85;
+      elapsed += 65 + Math.random() * 55;
       timers.push(window.setTimeout(() => setShown(i + 1), elapsed));
     });
-    timers.push(window.setTimeout(finish, elapsed + 420));
+    timers.push(window.setTimeout(finish, elapsed + 300));
 
     window.addEventListener("keydown", finish);
     window.addEventListener("pointerdown", finish);
@@ -76,7 +76,7 @@ export function BootScreen() {
   return (
     <div
       aria-hidden="true"
-      className="boot-overlay fixed inset-0 z-[300] items-center justify-center bg-bg px-4 font-mono text-[13px] leading-[1.8] text-muted transition-[opacity,visibility] duration-500 data-[phase=leaving]:invisible data-[phase=leaving]:opacity-0"
+      className="boot-overlay fixed inset-0 z-[300] items-center justify-center bg-bg px-4 font-mono text-[13px] leading-[1.8] text-muted transition-[opacity,visibility] duration-400 data-[phase=leaving]:invisible data-[phase=leaving]:opacity-0"
       data-phase={phase}
       style={phase === "leaving" ? { display: "flex" } : undefined}
     >

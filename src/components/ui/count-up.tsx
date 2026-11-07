@@ -1,10 +1,15 @@
 "use client";
 
-import { animate, useInView, useReducedMotion } from "motion/react";
+import { useInView, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
-/** Counts from 0 to `value` with an ease-out curve when scrolled into view. */
-export function CountUp({ value, duration = 1.4 }: { value: number; duration?: number }) {
+const easeOutExpo = (t: number) => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t));
+
+/**
+ * Counts from 0 to `value` when scrolled into view.
+ * A tiny rAF loop instead of Motion's `animate()`, which keeps that code out of the bundle.
+ */
+export function CountUp({ value, duration = 1400 }: { value: number; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
   const reduce = useReducedMotion();
@@ -12,12 +17,15 @@ export function CountUp({ value, duration = 1.4 }: { value: number; duration?: n
 
   useEffect(() => {
     if (!inView || reduce) return;
-    const controls = animate(0, value, {
-      duration,
-      ease: [0.16, 1, 0.3, 1],
-      onUpdate: (v) => setN(Math.round(v)),
-    });
-    return () => controls.stop();
+    let raf = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / duration);
+      setN(Math.round(value * easeOutExpo(t)));
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, [inView, reduce, value, duration]);
 
   return <span ref={ref}>{n}</span>;

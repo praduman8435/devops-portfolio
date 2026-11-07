@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, type HTMLMotionProps } from "motion/react";
+import { m, type HTMLMotionProps } from "motion/react";
 
 interface RevealProps extends HTMLMotionProps<"div"> {
   /** Stagger index; each step adds 80ms of delay. */
@@ -11,7 +11,7 @@ interface RevealProps extends HTMLMotionProps<"div"> {
 /** Fades and lifts its children into view once, when scrolled into the viewport. */
 export function Reveal({ delay = 0, y = 18, children, ...rest }: RevealProps) {
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "0px 0px -60px 0px" }}
@@ -19,6 +19,6 @@ export function Reveal({ delay = 0, y = 18, children, ...rest }: RevealProps) {
       {...rest}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }

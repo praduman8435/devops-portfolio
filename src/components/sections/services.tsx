@@ -18,7 +18,7 @@ export function Services() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((s, i) => (
             <Reveal key={s.id} delay={i % 3} className="h-full">
-              <article data-spotlight className="hud-card flex h-full flex-col p-7">
+              <article data-spotlight className="hud-card flex h-full flex-col p-6 sm:p-7">
                 <div className="mb-7 flex items-center justify-between">
                   <span className="grid size-10 place-items-center rounded-md border border-accent/25 bg-accent/5 text-accent">
                     <ServiceGlyph name={s.icon} className="size-5" />

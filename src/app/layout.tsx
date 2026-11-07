@@ -6,7 +6,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getSiteUrl, site } from "@/content/site";
 import { BootScreen } from "@/components/effects/boot-screen";
 import { PointerEffects } from "@/components/effects/pointer-effects";
-import { CommandPalette } from "@/components/ui/command-palette";
+import { CommandPaletteLoader } from "@/components/ui/command-palette-loader";
 import { Toaster } from "@/components/ui/toaster";
 import { MotionProvider } from "@/components/ui/motion-provider";
 import "./globals.css";
@@ -16,7 +16,9 @@ const inter = localFont({
   src: "../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2",
   variable: "--font-inter",
   weight: "100 900",
-  display: "swap",
+  // Body text: "optional" means no late swap re-paint, which keeps LCP at first paint on slow networks.
+  // The metric-adjusted fallback is visually near-identical; cached visits use Inter.
+  display: "optional",
 });
 
 const jetbrains = localFont({
@@ -94,10 +96,10 @@ const personJsonLd = {
 };
 
 /**
- * Runs before first paint. It decides whether to play the boot sequence (once per session,
+ * Runs before first paint. It decides whether to play the boot sequence (once per session, desktop only,
  * never with reduced motion) and fails open if the app never hydrates.
  */
-const bootScript = `(function(){var d=document.documentElement;try{if(!sessionStorage.getItem('pp-booted')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.dataset.boot='pending'}}catch(e){}setTimeout(function(){if(d.dataset.boot==='pending'){d.dataset.boot='done'}},6000)})();`;
+const bootScript = `(function(){var d=document.documentElement;try{if(!sessionStorage.getItem('pp-booted')&&matchMedia('(pointer: fine) and (min-width: 1024px)').matches&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.dataset.boot='pending'}}catch(e){}setTimeout(function(){if(d.dataset.boot==='pending'){d.dataset.boot='done'}},5000)})();`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -126,7 +128,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <MotionProvider>
           <BootScreen />
           {children}
-          <CommandPalette />
+          <CommandPaletteLoader />
           <Toaster />
         </MotionProvider>
 

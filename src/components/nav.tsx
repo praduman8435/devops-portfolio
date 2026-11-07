@@ -1,12 +1,12 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import { useEffect, useState, useSyncExternalStore } from "react";
 
 import { sections } from "@/content/site";
 import { cn } from "@/lib/cn";
 import { buttonClass } from "./ui/button";
-import { openCommandPalette } from "./ui/command-palette";
+import { openCommandPalette } from "@/lib/events";
 import { SearchIcon } from "./ui/icons";
 
 const navItems = sections.filter((s) => s.inNav);
@@ -61,7 +61,7 @@ export function Nav() {
       className={cn(
         "fixed inset-x-0 top-0 z-[100] border-b transition-[background-color,border-color,backdrop-filter] duration-300",
         scrolled || open
-          ? "border-line bg-bg/75 backdrop-blur-xl backdrop-saturate-150"
+          ? "border-line bg-bg/85 backdrop-blur-md backdrop-saturate-150 md:bg-bg/75 md:backdrop-blur-xl"
           : "border-transparent bg-transparent",
       )}
     >
@@ -122,7 +122,7 @@ export function Nav() {
 
       <AnimatePresence>
         {open && (
-          <motion.div
+          <m.div
             id="mobile-menu"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "calc(100dvh - 68px)" }}
@@ -133,7 +133,7 @@ export function Nav() {
             <div className="container-page flex flex-col gap-8 py-6">
               <ul>
                 {sections.map((s, i) => (
-                  <motion.li
+                  <m.li
                     key={s.id}
                     initial={{ opacity: 0, x: -12 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -147,14 +147,14 @@ export function Nav() {
                       <span className="text-xs font-normal text-accent">{s.index}</span>
                       {s.label}
                     </a>
-                  </motion.li>
+                  </m.li>
                 ))}
               </ul>
               <a href="#contact" onClick={() => setOpen(false)} className={buttonClass("primary", "md", "self-start")}>
                 start a project →
               </a>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </header>

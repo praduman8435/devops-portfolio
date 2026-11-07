@@ -101,7 +101,7 @@ export function Work() {
 
         {featured && (
           <Reveal>
-            <article data-spotlight className="hud-card grid grid-cols-1 gap-8 p-7 sm:p-9 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)] lg:gap-12">
+            <article data-spotlight className="hud-card grid grid-cols-1 gap-8 p-6 sm:p-9 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)] lg:gap-12">
               <div className="flex flex-col gap-5">
                 <Meta p={featured} />
                 <h3 className="font-mono text-[clamp(1.4rem,2.4vw,1.85rem)] leading-tight font-bold tracking-[-0.04em]">
@@ -124,7 +124,7 @@ export function Work() {
         <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
           {rest.map((p, i) => (
             <Reveal key={p.id} delay={i} className="h-full">
-              <article data-spotlight className="hud-card flex h-full flex-col gap-5 p-7">
+              <article data-spotlight className="hud-card flex h-full flex-col gap-5 p-6 sm:p-7">
                 <Meta p={p} />
                 <h3 className="font-mono text-[1.32rem] leading-tight font-bold tracking-[-0.035em]">{p.title}</h3>
                 <p className="text-[0.97rem] leading-relaxed text-muted">{p.summary}</p>

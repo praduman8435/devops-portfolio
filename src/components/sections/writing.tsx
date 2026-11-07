@@ -49,7 +49,7 @@ export function Writing() {
           </Reveal>
 
           <Reveal delay={2} className="lg:sticky lg:top-24">
-            <aside data-spotlight className="hud-card p-7">
+            <aside data-spotlight className="hud-card p-6 sm:p-7">
               <p className="font-mono text-xs text-accent">series · {kubernetesSeries.parts.length} parts</p>
               <h3 className="mt-2.5 font-mono text-xl font-bold tracking-[-0.035em]">{kubernetesSeries.title}</h3>
               <p className="mt-2 text-[0.95rem] text-muted">{kubernetesSeries.description}</p>

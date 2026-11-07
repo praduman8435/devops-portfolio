@@ -37,6 +37,10 @@ export function NetworkCanvas({ className }: { className?: string }) {
     if (!canvas || !ctx) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Phones and tablets: fewer pixels, fewer nodes, 30fps. That saves battery while staying smooth.
+    const lowPower = window.matchMedia("(pointer: coarse)").matches || (navigator.hardwareConcurrency ?? 8) <= 4;
+    const frameInterval = lowPower ? 1000 / 30 : 0;
+    let lastFrame = 0;
     let width = 0;
     let height = 0;
     let nodes: Node[] = [];
@@ -67,14 +71,14 @@ export function NetworkCanvas({ className }: { className?: string }) {
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const dpr = Math.min(lowPower ? 1.5 : 2, window.devicePixelRatio || 1);
       width = rect.width;
       height = rect.height;
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      const count = Math.round(Math.min(85, Math.max(28, (width * height) / 15000)));
+      const count = Math.round(Math.min(lowPower ? 38 : 85, Math.max(24, (width * height) / 15000)));
       nodes = Array.from({ length: count }, () => ({
         x: Math.random() * width,
         y: Math.random() * height,
@@ -122,13 +126,15 @@ export function NetworkCanvas({ className }: { className?: string }) {
         if (!a || !b) continue;
         const x = a.x + (b.x - a.x) * p.t;
         const y = a.y + (b.y - a.y) * p.t;
-        ctx.fillStyle = `rgba(${CYAN}, 0.9)`;
-        ctx.shadowColor = `rgba(${CYAN}, 0.9)`;
-        ctx.shadowBlur = 8;
+        // Cheap glow: a soft halo plus a bright core (shadowBlur is very expensive per frame).
+        ctx.fillStyle = `rgba(${CYAN}, 0.18)`;
+        ctx.beginPath();
+        ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = `rgba(${CYAN}, 0.95)`;
         ctx.beginPath();
         ctx.arc(x, y, 1.6, 0, Math.PI * 2);
         ctx.fill();
-        ctx.shadowBlur = 0;
       }
 
       // Nodes
@@ -179,11 +185,14 @@ export function NetworkCanvas({ className }: { className?: string }) {
       });
     };
 
-    const loop = () => {
+    const loop = (now: number) => {
       raf = 0;
       if (!visible || document.hidden) return;
-      step();
-      draw();
+      step(); // physics every frame keeps motion speed constant…
+      if (now - lastFrame >= frameInterval) {
+        lastFrame = now; // …but low-power devices only repaint at ~30fps
+        draw();
+      }
       raf = requestAnimationFrame(loop);
     };
     const start = () => {

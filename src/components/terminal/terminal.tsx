@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useBooted } from "@/hooks/use-boot";
-import { TERMINAL_FOCUS_EVENT } from "@/components/ui/command-palette";
+import { TERMINAL_FOCUS_EVENT } from "@/lib/events";
 import { cn } from "@/lib/cn";
 import {
   autoplayScript,

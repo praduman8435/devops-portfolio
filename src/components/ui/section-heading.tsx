@@ -12,7 +12,7 @@ interface SectionHeadingProps {
 
 export function SectionHeading({ index, label, title, description, className }: SectionHeadingProps) {
   return (
-    <header className={cn("mb-14 max-w-3xl", className)}>
+    <header className={cn("mb-10 max-w-3xl sm:mb-14", className)}>
       <Reveal>
         <p className="mb-4 font-mono text-[13px] text-accent">
           <span className="text-dim">{"//"}</span> {index} — {label}

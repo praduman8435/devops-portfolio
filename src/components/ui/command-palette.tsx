@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { sections, site } from "@/content/site";
@@ -9,6 +9,7 @@ import { defaultMailto } from "@/lib/mailto";
 import { scrollToId } from "@/lib/scroll";
 import { toast } from "@/lib/toast";
 import { cn } from "@/lib/cn";
+import { PALETTE_EVENT, TERMINAL_FOCUS_EVENT } from "@/lib/events";
 import {
   CopyIcon,
   GitHubIcon,
@@ -20,12 +21,6 @@ import {
   TerminalIcon,
   XIcon,
 } from "./icons";
-
-export const PALETTE_EVENT = "pp:palette";
-export const TERMINAL_FOCUS_EVENT = "pp:terminal-focus";
-
-/** Opens the palette from anywhere (e.g. the nav button). */
-export const openCommandPalette = () => window.dispatchEvent(new Event(PALETTE_EVENT));
 
 interface Command {
   id: string;
@@ -99,13 +94,16 @@ function useCommands(): Command[] {
  * ⌘K / Ctrl+K command palette. It's a keyboard-first way around the site, implemented as an
  * accessible combobox + listbox inside a modal dialog.
  */
-export function CommandPalette() {
-  const [open, setOpen] = useState(false);
+export function CommandPalette({ defaultOpen = false }: { defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(defaultOpen);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
-  const restoreFocus = useRef<HTMLElement | null>(null);
+  // Lazily mounted already-open: remember what had focus so closing can hand it back.
+  const restoreFocus = useRef<HTMLElement | null>(
+    defaultOpen && typeof document !== "undefined" ? (document.activeElement as HTMLElement | null) : null,
+  );
   const listId = useId();
   const commands = useCommands();
 
@@ -194,7 +192,7 @@ export function CommandPalette() {
   return (
     <AnimatePresence>
       {open && (
-        <motion.div
+        <m.div
           className="fixed inset-0 z-[220] flex items-start justify-center bg-black/60 px-4 pt-[14vh] backdrop-blur-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -204,7 +202,7 @@ export function CommandPalette() {
             if (e.target === e.currentTarget) close();
           }}
         >
-          <motion.div
+          <m.div
             role="dialog"
             aria-modal="true"
             aria-label="Command palette"
@@ -274,8 +272,8 @@ export function CommandPalette() {
               <span>↵ select</span>
               <span className="ml-auto">⌘K toggle</span>
             </div>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

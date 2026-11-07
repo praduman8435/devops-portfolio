@@ -10,7 +10,7 @@
   --color-panel-2: #121816;
   --color-fg: #dbe6df;
   --color-muted: #8d9d94;
-  --color-dim: #57655d;
+  --color-dim: #6f7e75; /* ≥ 4.5:1 on --color-bg (WCAG AA) */
   --color-accent: #3dff8f;
   --color-accent-ink: #03140a;
   --color-cyan: #5ad8ff;
@@ -23,22 +23,12 @@
 
   --animate-blink: blink 1.05s steps(1) infinite;
   --animate-marquee: marquee 55s linear infinite;
-  --animate-ping-soft: ping-soft 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
-  --animate-scan: scan 7s linear infinite;
 
   @keyframes blink {
     50% { opacity: 0; }
   }
   @keyframes marquee {
-    to { transform: translateX(-50%); }
-  }
-  @keyframes ping-soft {
-    0% { box-shadow: 0 0 0 0 rgb(61 255 143 / 0.55); }
-    75%, 100% { box-shadow: 0 0 0 10px rgb(61 255 143 / 0); }
-  }
-  @keyframes scan {
-    from { transform: translateY(-100%); }
-    to { transform: translateY(100vh); }
+    to { transform: translate3d(-50%, 0, 0); }
   }
 }
 
@@ -60,6 +50,14 @@
     scroll-behavior: smooth;
     scroll-padding-top: 72px;
     -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+  }
+  a,
+  button,
+  input,
+  textarea {
+    touch-action: manipulation;
   }
   body {
     @apply bg-bg font-sans text-fg antialiased;
@@ -82,10 +80,59 @@
     html { scroll-behavior: auto; }
     *, *::before, *::after {
       animation-duration: 0.001ms !important;
+      animation-delay: 0s !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.001ms !important;
     }
   }
+}
+
+/* ==========================================================================
+   Hero entrance: pure CSS, so the hero (the LCP element) paints without
+   waiting for JavaScript. It holds while the desktop boot screen plays.
+   ========================================================================== */
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+}
+.hero-in {
+  animation: hero-in 0.75s var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 70ms + 40ms);
+}
+/* LCP candidates (headline, intro) slide up but are never transparent: Chrome ignores text
+   that first paints at opacity 0, which would push LCP back to a later element. */
+@keyframes hero-rise {
+  from {
+    transform: translate3d(0, 14px, 0);
+  }
+}
+.hero-rise {
+  animation: hero-rise 0.75s var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 70ms + 40ms);
+}
+html[data-boot="pending"] .hero-in,
+html[data-boot="pending"] .hero-rise {
+  animation-play-state: paused;
+}
+
+/* Compositor-only "live" pulse (transform + opacity, not box-shadow). */
+@keyframes ping-ring {
+  0% { transform: scale(1); opacity: 0.55; }
+  75%, 100% { transform: scale(2.6); opacity: 0; }
+}
+.ping-dot {
+  position: relative;
+}
+.ping-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: ping-ring 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  will-change: transform, opacity;
 }
 
 /* ==========================================================================
@@ -128,11 +175,12 @@
     background: repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.02) 0 1px, transparent 1px 3px);
   }
 
-  /* Film-grain noise via inline SVG turbulence. */
+  /* Film-grain noise via inline SVG turbulence. Desktop only: it saves GPU memory on phones. */
   .noise {
+    display: none;
     pointer-events: none;
     position: fixed;
-    inset: -50%;
+    inset: 0;
     z-index: 59;
     opacity: 0.05;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -171,12 +219,20 @@
       linear-gradient(var(--color-accent), var(--color-accent)) bottom right / 14px 1px no-repeat,
       linear-gradient(var(--color-accent), var(--color-accent)) bottom right / 1px 14px no-repeat;
   }
-  .hud-card:hover {
-    border-color: rgb(61 255 143 / 0.32);
+  /* Hover effects only where hover exists, so taps on touch screens never leave a "stuck" glow. */
+  @media (hover: hover) {
+    .hud-card:hover {
+      border-color: rgb(61 255 143 / 0.32);
+    }
+    .hud-card:hover::before,
+    .hud-card:hover::after {
+      opacity: 1;
+    }
   }
-  .hud-card:hover::before,
-  .hud-card:hover::after {
-    opacity: 1;
+  @media (min-width: 768px) and (pointer: fine) {
+    .noise {
+      display: block;
+    }
   }
 
   /* Blinking block caret. */

@@ -24,7 +24,7 @@ export const site = {
     linkedin: "https://www.linkedin.com/in/praduman-prajapati/",
     x: "https://x.com/CndTwtprad",
     blog: "https://itspraduman.hashnode.dev/",
-    coffee: "https://www.buymeacoffee.com/praduman8435",
+    coffee: "https://buymeacoffee.com/praduman",
     source: "https://github.com/praduman8435/devops-portfolio",
   },
   handles: {

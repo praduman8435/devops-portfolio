@@ -6,7 +6,7 @@
   "author": "Praduman Prajapati <praduman.cnd@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": ">=20.9.0"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "next dev",

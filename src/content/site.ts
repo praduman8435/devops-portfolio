@@ -17,6 +17,8 @@ export const site = {
   yearsExperience: 3,
   articles: 22,
   repoName: "devops-portfolio",
+  /** Set to true after making the GitHub repo public, so "view source" links stop returning a 404 for visitors. */
+  sourceIsPublic: false,
   links: {
     github: "https://github.com/praduman8435",
     linkedin: "https://www.linkedin.com/in/praduman-prajapati/",

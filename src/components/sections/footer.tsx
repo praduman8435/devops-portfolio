@@ -13,10 +13,14 @@ export function Footer() {
           local time in India: <span className="text-fg"><LocalClock timeZone={site.timezone} /></span> IST
         </p>
         <p className="flex flex-wrap gap-x-3 gap-y-1">
-          <a href={site.links.source} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-accent">
-            source
-          </a>
-          <span className="text-dim">·</span>
+          {site.sourceIsPublic && (
+            <>
+              <a href={site.links.source} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-accent">
+                source
+              </a>
+              <span className="text-dim">·</span>
+            </>
+          )}
           <a href={site.links.coffee} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-accent">
             buy me a coffee
           </a>

@@ -87,7 +87,9 @@ function useCommands(): Command[] {
       { id: "linkedin", group: "Elsewhere", label: "LinkedIn", hint: site.handles.linkedin, icon: LinkedInIcon, run: () => openExternal(site.links.linkedin) },
       { id: "x", group: "Elsewhere", label: "X / Twitter", hint: site.handles.x, keywords: "twitter", icon: XIcon, run: () => openExternal(site.links.x) },
       { id: "blog", group: "Elsewhere", label: "Hashnode blog", hint: site.handles.blog, keywords: "articles writing", icon: HashnodeIcon, run: () => openExternal(site.links.blog) },
-      { id: "source", group: "Elsewhere", label: "View this site's source", hint: "github", keywords: "code repo next.js", icon: GitHubIcon, run: () => openExternal(site.links.source) },
+      ...(site.sourceIsPublic
+        ? [{ id: "source", group: "Elsewhere", label: "View this site's source", hint: "github", keywords: "code repo next.js", icon: GitHubIcon, run: () => openExternal(site.links.source) } satisfies Command]
+        : []),
     ],
     [],
   );

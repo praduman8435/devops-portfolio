@@ -14,6 +14,8 @@ export interface Product {
   image?: { src: string; alt: string; width: number; height: number };
   /** Address shown in the browser-frame chrome. */
   displayUrl?: string;
+  /** Featured products render full width with a screenshot. */
+  featured?: boolean;
   accent?: string;
   links: ProjectLink[];
 }
@@ -41,10 +43,36 @@ export const products: Product[] = [
     },
     displayUrl: "klasiq-tau.vercel.app",
     accent: "#e5383b",
+    featured: true,
     links: [
       { label: "live site", href: "https://klasiq-tau.vercel.app/" },
       { label: "source", href: "https://github.com/praduman8435/klasiq" },
     ],
+  },
+  {
+    id: "instaplots",
+    name: "InstaPlots",
+    tagline: "A land marketplace for India: real photos, real prices.",
+    description:
+      "InstaPlots connects people looking for farmland, house plots and commercial land with the sellers who have it. Buyers search by village, town or road, in the units they actually use, then call or WhatsApp the seller directly, with no login, no fee and nobody in between. Every listing is reviewed and every seller's phone is verified before it goes live.",
+    status: "live",
+    highlights: [
+      "Search by place, land type and budget, in bigha, acre, gaj or sq ft",
+      "Direct call / WhatsApp to sellers, with no login or fees for buyers",
+      "Moderated listings and phone-verified sellers",
+      "WhatsApp land alerts matched to a buyer's place and budget",
+    ],
+    stack: ["Web app", "Vercel", "Custom domain"],
+    image: {
+      src: "/projects/instaplots.jpg",
+      alt: "InstaPlots home page with a land search bar over a farmland photo and popular locations",
+      width: 1440,
+      height: 900,
+    },
+    displayUrl: "instaplots.com",
+    accent: "#0f7a4a",
+    featured: true,
+    links: [{ label: "instaplots.com", href: "https://instaplots.com/" }],
   },
   {
     id: "radixo",
@@ -70,5 +98,5 @@ export const products: Product[] = [
     stack: ["Next.js", "TypeScript", "Tailwind CSS v4", "Prisma", "PostgreSQL"],
     links: [{ label: "source", href: "https://github.com/praduman8435/klasiq-shop-kirana" }],
   },
-  // To add another product (for example "Plots"), copy an entry above and fill in its links.
+  // To add another product, copy an entry above. Set `featured: true` for a full-width card with a screenshot.
 ];

@@ -187,7 +187,8 @@ function ProductBody({ product, large = false }: { product: Product; large?: boo
 }
 
 export function Products() {
-  const [featured, ...rest] = products;
+  const featured = products.filter((p) => p.featured);
+  const rest = products.filter((p) => !p.featured);
 
   return (
     <section id="products" className="pt-[clamp(88px,11vw,150px)]">
@@ -199,16 +200,30 @@ export function Products() {
           description="Beyond pipelines: full-stack products I've designed, built and deployed for real users. I know first-hand what developers need from the platform underneath them."
         />
 
-        {featured && (
-          <Reveal>
-            <article data-spotlight className="group hud-card grid grid-cols-1 items-center gap-8 p-5 sm:p-7 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-10">
-              <ProductVisual product={featured} />
-              <div className="px-2 pb-2 sm:px-0 sm:pb-0">
-                <ProductBody product={featured} large />
-              </div>
-            </article>
-          </Reveal>
-        )}
+        {/* Featured products: full width, screenshot side alternates for rhythm. */}
+        <div className="grid grid-cols-1 gap-4">
+          {featured.map((p, i) => {
+            const flip = i % 2 === 1;
+            return (
+              <Reveal key={p.id}>
+                <article
+                  data-spotlight
+                  className={cn(
+                    "group hud-card grid grid-cols-1 items-center gap-8 p-5 sm:p-7 lg:gap-10",
+                    flip ? "lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]" : "lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]",
+                  )}
+                >
+                  <div className={cn(flip && "lg:order-2")}>
+                    <ProductVisual product={p} priority={false} />
+                  </div>
+                  <div className={cn("px-2 pb-2 sm:px-0 sm:pb-0", flip && "lg:order-1")}>
+                    <ProductBody product={p} large />
+                  </div>
+                </article>
+              </Reveal>
+            );
+          })}
+        </div>
 
         <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
           {rest.map((p, i) => (

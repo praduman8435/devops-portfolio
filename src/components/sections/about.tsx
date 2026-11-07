@@ -35,9 +35,10 @@ export function About() {
               delivery with ArgoCD, and pipelines where SonarQube and Trivy gate every build before it gets near production.
             </p>
             <p>
-              I also <strong>ship complete products</strong>. Klasiq, a commerce platform for a real retail business, runs on
-              Next.js, PostgreSQL and Vercel, so I understand the application side of the systems I automate. I write it all up
-              too: <strong>22 articles</strong> on Hashnode, including a 10-part Kubernetes series.
+              I also <strong>ship complete products</strong>, including Klasiq, a commerce platform for a real retail business,
+              and InstaPlots, a land marketplace for India. Both are live in production, so I understand the application side
+              of the systems I automate. I write it all up too: <strong>22 articles</strong> on Hashnode, including a 10-part
+              Kubernetes series.
             </p>
           </Reveal>
         </div>
@@ -70,7 +71,7 @@ export function About() {
                     </span>
                   ),
                 )}
-                <span className="text-cyan">currently</span>: <span className="text-fg">building klasiq · radixo</span>
+                <span className="text-cyan">currently</span>: <span className="text-fg">klasiq · instaplots · radixo</span>
                 {"\n"}
                 <span className="text-cyan">availability</span>: <span className="text-accent">open to new projects</span>
               </code>

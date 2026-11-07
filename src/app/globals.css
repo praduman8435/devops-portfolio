@@ -1,0 +1,229 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Design tokens. A phosphor-green terminal palette on near-black.
+   ========================================================================== */
+@theme {
+  --color-bg: #060807;
+  --color-bg-2: #0a0d0c;
+  --color-panel: #0d1110;
+  --color-panel-2: #121816;
+  --color-fg: #dbe6df;
+  --color-muted: #8d9d94;
+  --color-dim: #57655d;
+  --color-accent: #3dff8f;
+  --color-accent-ink: #03140a;
+  --color-cyan: #5ad8ff;
+  --color-amber: #ffc04d;
+  --color-danger: #ff6b74;
+  --color-line: rgb(120 255 180 / 0.075);
+  --color-line-2: rgb(120 255 180 / 0.15);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-blink: blink 1.05s steps(1) infinite;
+  --animate-marquee: marquee 55s linear infinite;
+  --animate-ping-soft: ping-soft 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  --animate-scan: scan 7s linear infinite;
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+  @keyframes marquee {
+    to { transform: translateX(-50%); }
+  }
+  @keyframes ping-soft {
+    0% { box-shadow: 0 0 0 0 rgb(61 255 143 / 0.55); }
+    75%, 100% { box-shadow: 0 0 0 10px rgb(61 255 143 / 0); }
+  }
+  @keyframes scan {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(100vh); }
+  }
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+@layer base {
+  :root {
+    color-scheme: dark;
+    --gx: 70vw;
+    --gy: 15vh;
+  }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 72px;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-bg font-sans text-fg antialiased;
+    overflow-x: clip;
+  }
+  html[data-boot="pending"] body,
+  body[data-lock="true"] {
+    overflow: hidden;
+  }
+  ::selection {
+    background: rgb(61 255 143 / 0.28);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+/* ==========================================================================
+   Utilities
+   ========================================================================== */
+@utility container-page {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 40px);
+}
+
+@utility text-balance-pretty {
+  text-wrap: balance;
+}
+
+/* Fine terminal grid that fades out towards the edges. */
+@utility bg-grid {
+  background-image:
+    linear-gradient(var(--color-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Gradient hairline used on section dividers. */
+@utility hairline {
+  background: linear-gradient(90deg, transparent, var(--color-line-2) 20%, var(--color-line-2) 80%, transparent);
+}
+
+/* ==========================================================================
+   Components: effects that are clearer as CSS than as utility soup.
+   ========================================================================== */
+@layer components {
+  /* CRT scanlines across the whole viewport. */
+  .scanlines {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    background: repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.02) 0 1px, transparent 1px 3px);
+  }
+
+  /* Film-grain noise via inline SVG turbulence. */
+  .noise {
+    pointer-events: none;
+    position: fixed;
+    inset: -50%;
+    z-index: 59;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Glass card with cursor spotlight and HUD corner brackets. Pair with data-spotlight. */
+  .hud-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border: 1px solid var(--color-line-2);
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgb(18 24 22 / 0.78), rgb(9 12 11 / 0.78));
+    transition: border-color 0.3s ease, transform 0.4s var(--ease-out-expo);
+  }
+  .hud-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    background: radial-gradient(480px circle at var(--mx, 50%) var(--my, 0%), rgb(61 255 143 / 0.08), transparent 45%);
+  }
+  .hud-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.35;
+    transition: opacity 0.3s ease;
+    background:
+      linear-gradient(var(--color-accent), var(--color-accent)) top left / 14px 1px no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) top left / 1px 14px no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) bottom right / 14px 1px no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) bottom right / 1px 14px no-repeat;
+  }
+  .hud-card:hover {
+    border-color: rgb(61 255 143 / 0.32);
+  }
+  .hud-card:hover::before,
+  .hud-card:hover::after {
+    opacity: 1;
+  }
+
+  /* Blinking block caret. */
+  .caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.05em;
+    margin-left: 3px;
+    vertical-align: -0.16em;
+    background: var(--color-accent);
+    animation: var(--animate-blink);
+  }
+
+  /* Gradient-masked marquee edges. */
+  .mask-fade-x {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  }
+  .mask-fade-top {
+    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 25%, transparent 75%);
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 25%, transparent 75%);
+  }
+
+  /* Tree-style list markers (├─ └─) for the stack section. */
+  .tree > li::before {
+    content: "├─ ";
+    color: var(--color-dim);
+  }
+  .tree > li:last-child::before {
+    content: "└─ ";
+  }
+
+  /* Thin, themed scrollbars inside the terminal. */
+  .scroll-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-2) transparent;
+  }
+
+  /* Boot overlay, visible only while <html data-boot="pending">. */
+  .boot-overlay {
+    display: none;
+  }
+  html[data-boot="pending"] .boot-overlay {
+    display: flex;
+    animation: boot-failsafe 0s 4.5s forwards;
+  }
+  @keyframes boot-failsafe {
+    to { opacity: 0; visibility: hidden; }
+  }
+}

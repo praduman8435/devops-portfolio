@@ -15,7 +15,7 @@ interface ScrambleTextProps {
 
 /**
  * Decrypts text from random glyphs left-to-right when it enters the viewport.
- * Screen readers always get the real text through aria-label.
+ * Screen readers always get the real text through a visually hidden copy.
  */
 export function ScrambleText({ text, as: Tag = "h2", className, frames = 28 }: ScrambleTextProps) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -43,7 +43,8 @@ export function ScrambleText({ text, as: Tag = "h2", className, frames = 28 }: S
   }, [inView, reduce, text, frames]);
 
   return (
-    <Tag className={className} aria-label={text}>
+    <Tag className={className}>
+      <span className="sr-only">{text}</span>
       <span ref={ref} aria-hidden="true">
         {display}
       </span>

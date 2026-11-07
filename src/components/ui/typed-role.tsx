@@ -48,7 +48,9 @@ export function TypedRole({ roles }: { roles: readonly string[] }) {
   }, [booted, reduce, roles, first]);
 
   return (
-    <span aria-label={roles.join(", ")}>
+    <span>
+      {/* Screen readers get the full, stable list; the typing animation is decorative. */}
+      <span className="sr-only">{roles.join(", ")}</span>
       <span aria-hidden="true" className="text-accent">
         {text}
       </span>

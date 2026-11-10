@@ -19,7 +19,13 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
   },
   async headers() {
-    return [{ source: "/(.*)", headers: securityHeaders }];
+    const noIndex = [{ key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }];
+    return [
+      { source: "/(.*)", headers: securityHeaders },
+      // Private tool and APIs: never indexed, never cached by shared caches.
+      { source: "/radar", headers: [...noIndex, { key: "Cache-Control", value: "private, no-store" }] },
+      { source: "/api/:path*", headers: noIndex },
+    ];
   },
 };
 

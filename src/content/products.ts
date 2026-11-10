@@ -1,5 +1,3 @@
-import type { ProjectLink } from "./projects";
-
 export type ProductStatus = "live" | "beta" | "building";
 
 export interface Product {
@@ -10,14 +8,12 @@ export interface Product {
   status: ProductStatus;
   highlights: string[];
   stack: string[];
-  /** Screenshot in /public. Omit to render the generated preview panel instead. */
-  image?: { src: string; alt: string; width: number; height: number };
+  /** Screenshot in /public (1440×900). */
+  image: { src: string; alt: string; width: number; height: number };
   /** Address shown in the browser-frame chrome. */
-  displayUrl?: string;
-  /** Featured products render full width with a screenshot. */
-  featured?: boolean;
-  accent?: string;
-  links: ProjectLink[];
+  displayUrl: string;
+  /** Public URL visitors can open. Products link only to the live site, never to source. */
+  liveUrl: string;
 }
 
 export const products: Product[] = [
@@ -42,12 +38,7 @@ export const products: Product[] = [
       height: 900,
     },
     displayUrl: "klasiq-tau.vercel.app",
-    accent: "#e5383b",
-    featured: true,
-    links: [
-      { label: "live site", href: "https://klasiq-tau.vercel.app/" },
-      { label: "source", href: "https://github.com/praduman8435/klasiq" },
-    ],
+    liveUrl: "https://klasiq-tau.vercel.app/",
   },
   {
     id: "instaplots",
@@ -70,33 +61,53 @@ export const products: Product[] = [
       height: 900,
     },
     displayUrl: "instaplots.com",
-    accent: "#0f7a4a",
-    featured: true,
-    links: [{ label: "instaplots.com", href: "https://instaplots.com/" }],
+    liveUrl: "https://instaplots.com/",
   },
   {
     id: "radixo",
     name: "Radixo",
     tagline: "Chef-cooked meals, built your way.",
     description:
-      "Radixo is a student-dining startup from India offering flexible meal services. Students browse menus, build their own meal plan and manage a dining wallet, while the Radixo team runs operations behind a separate team login.",
-    status: "building",
-    highlights: ["Menus and build-your-own meal plans", "In-app dining wallet", "Separate team / operations login"],
+      "Radixo is a student-dining platform from India. Students pick a ready-made menu or build their own, eat 4 or 7 days a week, and book by the week or month. If they're away, they mark the days 24 hours ahead and the value goes back to their Radixo wallet. Login is just a phone number and an OTP.",
+    status: "live",
+    highlights: [
+      "Ready-made or build-your-own meal plans, 4 or 7 days a week",
+      "Plans from 1 week to 6 months, with up to 12% off longer bookings",
+      "Skip days with 24 hours' notice and get the value back in the wallet",
+      "Phone-number OTP login and a separate team / operations portal",
+    ],
     stack: ["Web app", "Vercel"],
+    image: {
+      src: "/projects/radixo.jpg",
+      alt: "Radixo wallet page with phone-number login and the three-step plan: pick your menu, book it, skip days",
+      width: 1440,
+      height: 900,
+    },
     displayUrl: "radixo.vercel.app",
-    accent: "#e63946",
-    links: [{ label: "live site", href: "https://radixo.vercel.app/" }],
+    liveUrl: "https://radixo.vercel.app/",
   },
   {
     id: "klasiq-kirana",
     name: "Klasiq Kirana",
-    tagline: "The general-store edition of Klasiq.",
+    tagline: "The neighbourhood grocery store, online.",
     description:
-      "A spin-off of Klasiq for kirana and general stores. Customers search by product or brand and choose pickup or local delivery. The owner gets counter sales, stock, suppliers, returns and KhataBook customer credit in one admin.",
-    status: "beta",
-    highlights: ["Point-of-sale counter billing", "Stock, suppliers and returns", "KhataBook customer credit ledger"],
-    stack: ["Next.js", "TypeScript", "Tailwind CSS v4", "Prisma", "PostgreSQL"],
-    links: [{ label: "source", href: "https://github.com/praduman8435/klasiq-shop-kirana" }],
+      "A grocery and general-store edition of Klasiq. Customers shop by category, from atta, rice and dal to snacks, personal care and household, with free delivery within 3 km or ready-to-collect store pickup, and pay on delivery or at the counter. Behind it, the owner runs counter sales, stock, suppliers, returns and KhataBook customer credit from one admin.",
+    status: "live",
+    highlights: [
+      "Category aisles with size variants and offer pricing",
+      "Free delivery within 3 km, or pick up at the store",
+      "Cash on delivery or pay at the store, with no card needed",
+      "Owner admin: counter sales, stock, suppliers, returns and KhataBook credit",
+    ],
+    stack: ["Next.js", "TypeScript", "Tailwind CSS v4", "Prisma", "PostgreSQL", "Vercel"],
+    image: {
+      src: "/projects/klasiq-kirana.jpg",
+      alt: "Klasiq Kirana storefront with delivery and pickup offers, grocery categories and product cards",
+      width: 1440,
+      height: 900,
+    },
+    displayUrl: "klasiq-shop-kirana.vercel.app",
+    liveUrl: "https://klasiq-shop-kirana.vercel.app/",
   },
-  // To add another product, copy an entry above. Set `featured: true` for a full-width card with a screenshot.
+  // To add another product, copy an entry above with its screenshot in /public/projects.
 ];

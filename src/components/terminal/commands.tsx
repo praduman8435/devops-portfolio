@@ -114,7 +114,7 @@ const productsCmd: CommandFn = () => [
       <>
         <Ok>{pad(`[${p.status}]`, 11)}</Ok>
         {pad(p.name.toLowerCase(), 15)}
-        <Ext href={p.links[0]?.href ?? site.links.github}>{p.links[0]?.label ?? "link"}</Ext>
+        <Ext href={p.liveUrl}>{p.displayUrl}</Ext>
       </>
     ),
   })),

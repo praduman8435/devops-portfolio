@@ -4,7 +4,7 @@ export interface StackGroup {
 }
 
 export const stack: StackGroup[] = [
-  { dir: "cloud", items: [{ name: "aws", note: "eks · ec2 · iam · alb" }, { name: "azure" }, { name: "gcp" }] },
+  { dir: "cloud", items: [{ name: "aws" }, { name: "azure" }, { name: "gcp" }] },
   { dir: "containers", items: [{ name: "docker" }, { name: "kubernetes" }, { name: "helm" }, { name: "kubeadm" }] },
   { dir: "ci-cd", items: [{ name: "jenkins" }, { name: "github-actions" }, { name: "gitlab-ci" }, { name: "argocd" }, { name: "nexus" }] },
   { dir: "iac", items: [{ name: "terraform" }, { name: "ansible" }] },
